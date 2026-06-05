@@ -1,0 +1,104 @@
+# ============================================================
+# schedule.yml — Tarea automatizada diaria
+# Se ejecuta todos los días a las 8:00 AM UTC (3:00 AM Lima).
+# Nadie lo llama. Git es el operador.
+#
+# Genera docs/status.json con el estado actual del evento
+# y hace commit automático al repositorio.
+#
+# GitHub Day Lima 2026 — José Hurtado Rivas (@josehurtadorivas)
+# GitOps: El Superpoder del Pull Request
+# ============================================================
+
+name: Schedule — Daily Status Snapshot
+
+on:
+  schedule:
+    # Cron: todos los días a las 08:00 UTC (03:00 AM Lima, Perú)
+    - cron: '0 8 * * *'
+
+  # También puede ejecutarse manualmente desde la UI de Actions
+  workflow_dispatch:
+
+permissions:
+  contents: write   # Necesario para hacer commit y push
+
+jobs:
+  daily-snapshot:
+    name: Generate Daily Status Snapshot
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout con token para poder hacer push ─────────
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── 2. Leer el event.json actual ─────────────────────────
+      - name: Read event.json
+        id: event
+        run: |
+          EVENT=$(cat src/assets/config/event.json)
+          echo "content=$EVENT" >> $GITHUB_OUTPUT
+
+      # ── 3. Generar docs/status.json ──────────────────────────
+      - name: Generate status.json
+        run: |
+          mkdir -p docs
+
+          cat > docs/status.json << EOF
+          {
+            "generated_at": "$(date -u '+%Y-%m-%dT%H:%M:%SZ')",
+            "generated_by": "GitHub Actions (schedule.yml)",
+            "workflow_run": "${{ github.run_id }}",
+            "event": $(cat src/assets/config/event.json),
+            "git": {
+              "sha": "${{ github.sha }}",
+              "actor": "${{ github.actor }}",
+              "ref": "${{ github.ref }}"
+            },
+            "meta": {
+              "note": "Este archivo se genera automáticamente cada día a las 08:00 UTC.",
+              "gitops_demo": "GitHub Day Lima 2026",
+              "speaker": "José Hurtado Rivas"
+            }
+          }
+          EOF
+
+          echo "✅ docs/status.json generado:"
+          cat docs/status.json
+
+      # ── 4. Commit y push automático ──────────────────────────
+      # El flag [skip ci] en el mensaje evita que este commit
+      # dispare el workflow de deploy (ci.yml / deploy.yml).
+      - name: Commit and push status snapshot
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add docs/status.json
+
+          # Solo hace commit si hay cambios reales
+          if git diff --staged --quiet; then
+            echo "ℹ️  Sin cambios en status.json — nada que commitear."
+          else
+            git commit -m "chore(status): daily snapshot $(date -u '+%Y-%m-%d') [skip ci]"
+            git push origin main
+            echo "✅ Snapshot commiteado y pusheado."
+          fi
+
+      # ── 5. Summary del workflow ───────────────────────────────
+      - name: Write schedule summary
+        run: |
+          echo "## 📊 Daily Snapshot — $(date -u '+%Y-%m-%d')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "El schedule.yml se ejecutó automáticamente." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Campo | Valor |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| ⏰ Generado | $(date -u '+%Y-%m-%d %H:%M:%S UTC') |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📄 Archivo | \`docs/status.json\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔁 Run ID | ${{ github.run_id }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> Git como operador que trabaja 24 horas sin descanso. 🤖" >> $GITHUB_STEP_SUMMARY

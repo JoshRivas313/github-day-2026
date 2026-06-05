@@ -1,0 +1,112 @@
+<!-- Loading -->
+<div *ngIf="loading" class="flex items-center justify-center gap-3 text-github-muted py-8">
+  <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+  </svg>
+  <span>Cargando datos del evento…</span>
+</div>
+
+<!-- Error -->
+<div *ngIf="error && !loading" class="card max-w-md mx-auto border-github-red/40 text-github-red text-sm">
+  ⚠️ No se pudo cargar <code class="font-mono">event.json</code>.
+</div>
+
+<!-- Card principal -->
+<div *ngIf="config && !loading" class="card max-w-2xl mx-auto animate-fade-in"
+     [class.border-glow-green]="isConfirmed"
+     [class.border-github-orange]="!isConfirmed">
+
+  <!-- Banner SPEAKER CONFIRMADO — solo visible cuando speakerStatus === 'confirmed' -->
+  <div *ngIf="isConfirmed"
+       class="flex items-center justify-center gap-3 bg-github-green/10 border border-github-green/30
+              rounded-lg py-4 mb-6 animate-fade-in">
+    <div class="flex items-center gap-2">
+      <svg class="w-6 h-6 text-github-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span class="text-github-green font-bold text-lg tracking-wide uppercase">
+        ¡Speaker Confirmado!
+      </span>
+    </div>
+  </div>
+
+  <!-- Banner PENDIENTE — solo visible cuando speakerStatus === 'pending' -->
+  <div *ngIf="!isConfirmed"
+       class="flex items-center justify-center gap-3 bg-github-orange/10 border border-github-orange/30
+              rounded-lg py-4 mb-6">
+    <svg class="w-5 h-5 text-github-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <span class="text-github-orange font-semibold">Speaker pendiente de confirmación</span>
+  </div>
+
+  <!-- Header -->
+  <div class="flex items-start justify-between gap-4 mb-6">
+    <div>
+      <p class="text-github-muted text-xs uppercase tracking-widest mb-1">Evento</p>
+      <h2 class="text-white font-bold text-xl">{{ config.event }}</h2>
+    </div>
+    <span class="badge-green whitespace-nowrap">
+      <span class="w-1.5 h-1.5 rounded-full bg-github-green animate-pulse-slow"></span>
+      En vivo
+    </span>
+  </div>
+
+  <!-- Campos del evento -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+    <!-- Speaker — campo protagonista del demo -->
+    <div class="rounded-md p-4 border transition-all duration-500 sm:col-span-2"
+         [ngClass]="isConfirmed
+           ? 'bg-github-green/5 border-github-green/40'
+           : 'bg-github-dark border-github-border'">
+      <p class="text-github-muted text-xs mb-2">🎤 Speaker</p>
+      <div class="flex items-center justify-between gap-3">
+        <p class="font-bold transition-all duration-500"
+           [ngClass]="isConfirmed ? 'text-github-green text-2xl' : 'text-github-muted text-lg italic'">
+          {{ config.speaker }}
+        </p>
+        <span *ngIf="isConfirmed"
+              class="badge-green font-semibold px-3 py-1 text-sm animate-fade-in">
+          ✓ Confirmado
+        </span>
+        <span *ngIf="!isConfirmed"
+              class="badge bg-github-orange/10 text-github-orange border border-github-orange/20 text-xs">
+          Pendiente
+        </span>
+      </div>
+    </div>
+
+    <div class="bg-github-dark rounded-md p-4 border border-github-border">
+      <p class="text-github-muted text-xs mb-1">📍 Ubicación</p>
+      <p class="text-white font-semibold">{{ config.location }}</p>
+    </div>
+
+    <div class="bg-github-dark rounded-md p-4 border border-github-border">
+      <p class="text-github-muted text-xs mb-1">🕐 Horario</p>
+      <p class="text-white font-semibold">{{ config.schedule }}</p>
+    </div>
+
+    <div class="bg-github-dark rounded-md p-4 border border-github-border sm:col-span-2">
+      <p class="text-github-muted text-xs mb-1">🏷️ Tema</p>
+      <p class="text-white font-semibold">
+        GitOps: El Superpoder del Pull Request para automatizar tus despliegues
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Footer de la card -->
+  <div class="mt-4 pt-4 border-t border-github-border flex items-center gap-2 text-xs text-github-muted">
+    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    Deploy: {{ formattedDeployTime }}
+    <span class="ml-auto font-mono text-github-green">✔ Fuente: event.json</span>
+  </div>
+
+</div>

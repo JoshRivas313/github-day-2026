@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-github-dark text-github-text font-sans antialiased;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    @apply bg-github-blue/30 text-white;
+  }
+}
+
+@layer components {
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-green {
+    @apply badge bg-github-green/10 text-github-green border border-github-green/20;
+  }
+
+  .badge-blue {
+    @apply badge bg-github-blue/10 text-github-blue border border-github-blue/20;
+  }
+
+  .badge-orange {
+    @apply badge bg-github-orange/10 text-github-orange border border-github-orange/20;
+  }
+
+  .badge-purple {
+    @apply badge bg-purple-500/10 text-purple-400 border border-purple-500/20;
+  }
+
+  .card {
+    @apply bg-github-surface border border-github-border rounded-lg p-6;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 bg-github-accent hover:bg-github-green
+           text-white font-medium text-sm rounded-md transition-colors duration-150 cursor-pointer;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-4 py-2 bg-transparent hover:bg-github-border/30
+           text-github-text border border-github-border font-medium text-sm rounded-md
+           transition-colors duration-150 cursor-pointer;
+  }
+
+  .code-block {
+    @apply font-mono text-sm bg-github-dark border border-github-border rounded-md p-4
+           text-github-green overflow-x-auto;
+  }
+
+  .step-dot {
+    @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold
+           border-2 flex-shrink-0;
+  }
+
+  .step-dot-done {
+    @apply step-dot bg-github-green/20 border-github-green text-github-green;
+  }
+
+  .step-dot-active {
+    @apply step-dot bg-github-blue/20 border-github-blue text-github-blue;
+  }
+
+  .step-dot-pending {
+    @apply step-dot bg-transparent border-github-border text-github-muted;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-github-blue via-github-green to-github-blue bg-clip-text text-transparent;
+    background-size: 200% auto;
+    animation: gradient-shift 4s linear infinite;
+  }
+
+  .border-glow-green {
+    box-shadow: 0 0 0 1px rgba(63, 185, 80, 0.3), 0 0 12px rgba(63, 185, 80, 0.1);
+  }
+
+  .border-glow-blue {
+    box-shadow: 0 0 0 1px rgba(88, 166, 255, 0.3), 0 0 12px rgba(88, 166, 255, 0.1);
+  }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-github-dark;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-github-border rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-github-muted;
+}
