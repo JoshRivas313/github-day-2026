@@ -240,12 +240,4 @@ git push origin main
 ## Stack
 
 - **Framework:** Angular 17
-- **Estilos:** Tailwind CSS 3
-- **CI/CD:** GitHub Actions
-- **Hosting:** GitHub Pages
-- **Fuente de verdad:** `src/assets/config/event.json`
-
----
-
-*GitHub Day Lima 2026 · José Hurtado Rivas · [@josehurtadorivas](https://github.com/josehurtadorivas)*
-*#GitHubDayLima · #GitOps*
+- **Estilos:** Tailwind 
