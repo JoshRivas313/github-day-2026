@@ -1,6 +1,7 @@
 # reset-demo.ps1
 # Vuelve el proyecto al estado base para ensayar la demo desde cero.
 # Uso: .\scripts\reset-demo.ps1
+# Repositorio: https://github.com/JoshRivas313/github-day-2026
 # GitHub Day Lima 2026 — Jose Hurtado Rivas
 
 Write-Host "`n Reseteando demo al estado base...`n" -ForegroundColor Cyan
